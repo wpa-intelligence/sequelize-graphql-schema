@@ -1,87 +1,63 @@
 "use strict";
 
-var _typeof =
-  typeof Symbol === "function" && typeof Symbol.iterator === "symbol"
-    ? function (obj) {
-        return typeof obj;
-      }
-    : function (obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-      };
-
-function _empty() {}
-function _invokeIgnored(body) {
-  var result = body();
-  if (result && result.then) {
-    return result.then(_empty);
-  }
-}
-function _invoke(body, then) {
-  var result = body();
-  if (result && result.then) {
-    return result.then(then);
-  }
-  return then(result);
-}
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 function _await(value, then, direct) {
   if (direct) {
     return then ? then(value) : value;
-  }
-  if (!value || !value.then) {
+  }if (!value || !value.then) {
     value = Promise.resolve(value);
-  }
-  return then ? value.then(then) : value;
-}
-var _require = require("graphql"),
-  GraphQLObjectType = _require.GraphQLObjectType,
-  GraphQLInputObjectType = _require.GraphQLInputObjectType,
-  GraphQLList = _require.GraphQLList,
-  GraphQLInt = _require.GraphQLInt,
-  GraphQLNonNull = _require.GraphQLNonNull,
-  GraphQLString = _require.GraphQLString,
-  GraphQLBoolean = _require.GraphQLBoolean,
-  GraphQLEnumType = _require.GraphQLEnumType;
-
-function _async(f) {
+  }return then ? value.then(then) : value;
+}function _async(f) {
   return function () {
     for (var args = [], i = 0; i < arguments.length; i++) {
       args[i] = arguments[i];
-    }
-    try {
+    }try {
       return Promise.resolve(f.apply(this, args));
     } catch (e) {
       return Promise.reject(e);
     }
   };
+}function _empty() {}function _invokeIgnored(body) {
+  var result = body();if (result && result.then) {
+    return result.then(_empty);
+  }
+}function _invoke(body, then) {
+  var result = body();if (result && result.then) {
+    return result.then(then);
+  }return then(result);
 }
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var _require = require("graphql"),
+    GraphQLObjectType = _require.GraphQLObjectType,
+    GraphQLInputObjectType = _require.GraphQLInputObjectType,
+    GraphQLList = _require.GraphQLList,
+    GraphQLInt = _require.GraphQLInt,
+    GraphQLNonNull = _require.GraphQLNonNull,
+    GraphQLString = _require.GraphQLString,
+    GraphQLBoolean = _require.GraphQLBoolean,
+    GraphQLEnumType = _require.GraphQLEnumType;
+
 var _require2 = require("graphql-sequelize"),
-  resolver = _require2.resolver,
-  attributeFields = _require2.attributeFields,
-  defaultListArgs = _require2.defaultListArgs,
-  defaultArgs = _require2.defaultArgs,
-  JSONType = _require2.JSONType;
+    resolver = _require2.resolver,
+    attributeFields = _require2.attributeFields,
+    defaultListArgs = _require2.defaultListArgs,
+    defaultArgs = _require2.defaultArgs,
+    JSONType = _require2.JSONType;
 
 var camelCase = require("camelcase");
 var remoteSchema = require("./remoteSchema");
 
 var _require3 = require("graphql-request"),
-  GraphQLClient = _require3.GraphQLClient;
+    GraphQLClient = _require3.GraphQLClient;
 
 var _ = require("lodash");
 
 var _require4 = require("dataloader-sequelize"),
-  createContext = _require4.createContext,
-  EXPECTED_OPTIONS_KEY = _require4.EXPECTED_OPTIONS_KEY,
-  resetCache = _require4.resetCache;
+    createContext = _require4.createContext,
+    EXPECTED_OPTIONS_KEY = _require4.EXPECTED_OPTIONS_KEY,
+    resetCache = _require4.resetCache;
 
 var DataLoader = require("dataloader");
 var TRANSACTION_NAMESPACE = "sequelize-graphql-schema";
@@ -105,15 +81,15 @@ var options = {
   },
 
   errorHandler: {
-    ETIMEDOUT: { statusCode: 503 },
-  },
+    ETIMEDOUT: { statusCode: 503 }
+  }
 };
 
 var defaultModelGraphqlOptions = {
   attributes: {
     exclude: [], // list attributes which are to be ignored in Model Input
     include: {}, // attributes in key:type format which are to be included in Model Input
-    import: [],
+    import: []
   },
   scopes: null,
   alias: {},
@@ -123,7 +99,7 @@ var defaultModelGraphqlOptions = {
   excludeQueries: [],
   extend: {},
   before: {},
-  overwrite: {},
+  overwrite: {}
 };
 
 var Models = {};
@@ -140,6 +116,7 @@ var errorHandler = function errorHandler(error) {
 };
 
 var remoteResolver = _async(function (source, args, context, info, remoteQuery, remoteArguments, type) {
+  log("HELLOOOOOOO");
   var availableArgs = _.keys(remoteQuery.args);
   var pickedArgs = _.pick(remoteArguments, availableArgs);
   var queryArgs = [];
@@ -152,18 +129,7 @@ var remoteResolver = _async(function (source, args, context, info, remoteQuery, 
 
   var fields = _.keys(type.getFields());
 
-  var query =
-    "query " +
-    remoteQuery.name +
-    "(" +
-    queryArgs.join(", ") +
-    "){\n    " +
-    remoteQuery.name +
-    "(" +
-    passedArgs.join(", ") +
-    "){\n      " +
-    fields.join(", ") +
-    "\n    }\n  }";
+  var query = "query " + remoteQuery.name + "(" + queryArgs.join(", ") + "){\n    " + remoteQuery.name + "(" + passedArgs.join(", ") + "){\n      " + fields.join(", ") + "\n    }\n  }";
 
   var variables = _.pick(args, availableArgs);
   var key = remoteQuery.to || "id";
@@ -178,6 +144,7 @@ var remoteResolver = _async(function (source, args, context, info, remoteQuery, 
   var headers = _.pick(context.headers, remoteQuery.headers);
   var client = new GraphQLClient(remoteQuery.endpoint, { headers: headers });
   return _await(client.request(query, variables), function (data) {
+
     return data[remoteQuery.name];
   });
 });
@@ -210,138 +177,108 @@ var queryResolver = _async(function (model, inputTypeName, source, args, context
   var type = "fetch";
 
   return _await(options.authorizer(source, args, context, info), function () {
-    return model.graphql.overwrite.hasOwnProperty(type)
-      ? model.graphql.overwrite[type](source, args, context, info)
-      : _await(execBefore(model, source, args, context, info, type), function () {
-          var _resolver;
+    return model.graphql.overwrite.hasOwnProperty(type) ? model.graphql.overwrite[type](source, args, context, info) : _await(execBefore(model, source, args, context, info, type), function () {
+      var _resolver;
 
-          var before = function before(findOptions, args, context) {
-            var orderArgs = args.order || "";
-            var orderBy = [];
+      var before = function before(findOptions, args, context) {
+        var orderArgs = args.order || "";
+        var orderBy = [];
 
-            if (orderArgs != "") {
-              var orderByClauses = orderArgs.split(",");
-              orderByClauses.forEach(function (clause) {
-                if (clause.indexOf("reverse:") === 0) {
-                  orderBy.push([clause.substring(8), "DESC"]);
-                } else {
-                  orderBy.push([clause, "ASC"]);
-                }
-              });
-
-              findOptions.order = orderBy;
+        if (orderArgs != "") {
+          var orderByClauses = orderArgs.split(",");
+          orderByClauses.forEach(function (clause) {
+            if (clause.indexOf("reverse:") === 0) {
+              orderBy.push([clause.substring(8), "DESC"]);
+            } else {
+              orderBy.push([clause, "ASC"]);
             }
+          });
 
-            findOptions.paranoid =
-              (args.where && args.where.deletedAt && args.where.deletedAt.ne === null) || args.paranoid === false ? false : model.options.paranoid;
-            findOptions.attributes = mapAttributes(model, info);
-            return findOptions;
-          };
+          findOptions.order = orderBy;
+        }
 
-          var scope = Array.isArray(model.graphql.scopes)
-            ? { method: [model.graphql.scopes[0], _.get(args, model.graphql.scopes[1], model.graphql.scopes[2] || null)] }
-            : model.graphql.scopes;
+        findOptions.paranoid = args.where && args.where.deletedAt && args.where.deletedAt.ne === null || args.paranoid === false ? false : model.options.paranoid;
+        findOptions.attributes = mapAttributes(model, info);
+        return findOptions;
+      };
 
-          return _await(
-            resolver(
-              model.scope(scope),
-              ((_resolver = {}),
-              _defineProperty(_resolver, EXPECTED_OPTIONS_KEY, dataloaderContext),
-              _defineProperty(_resolver, "before", before),
-              _resolver)
-            )(source, args, context, info),
-            function (data) {
-              return model.graphql.extend.hasOwnProperty(type) ? model.graphql.extend[type](data, source, args, context, info) : data;
-            }
-          );
-        });
+      var scope = Array.isArray(model.graphql.scopes) ? { method: [model.graphql.scopes[0], _.get(args, model.graphql.scopes[1], model.graphql.scopes[2] || null)] } : model.graphql.scopes;
+
+      return _await(resolver(model.scope(scope), (_resolver = {}, _defineProperty(_resolver, EXPECTED_OPTIONS_KEY, dataloaderContext), _defineProperty(_resolver, "before", before), _resolver))(source, args, context, info), function (data) {
+        return model.graphql.extend.hasOwnProperty(type) ? model.graphql.extend[type](data, source, args, context, info) : data;
+      });
+    });
   });
 });
 
 var mutationResolver = _async(function (model, inputTypeName, source, args, context, info, type, where, isBulk) {
   return _await(options.authorizer(source, args, context, info), function () {
+
     if (model.graphql.overwrite.hasOwnProperty(type)) {
       return model.graphql.overwrite[type](source, args, context, info, where);
     }
 
     var resolveMutation = _async(function () {
       return _await(execBefore(model, source, args, context, info, type, where), function () {
+
         var data = null;
         return _await(findOneRecord(model, type === "destroy" ? where : null), function (preData) {
           var operationType = isBulk && type === "create" ? "bulkCreate" : type;
 
-          return _invoke(
-            function () {
-              if (isBulk && type === "update") {
-                var keys = model.primaryKeyAttributes;
-                var updatePromises = [];
+          return _invoke(function () {
+            if (isBulk && type === "update") {
+              var keys = model.primaryKeyAttributes;
+              var updatePromises = [];
+
+              args[inputTypeName].forEach(function (input) {
+                updatePromises.push(model.update(input, {
+                  where: keys.reduce(function (all, key) {
+                    all[key] = input[key];
+                    return all;
+                  }, {})
+                }));
+              });
+
+              return _await(Promise.all(updatePromises), function (_Promise$all) {
+                data = _Promise$all;
+              });
+            } else {
+              if (typeof isBulk === "string" && args[inputTypeName].length && !args[inputTypeName][0][isBulk]) {
+                var bulkAddId = uuid();
 
                 args[inputTypeName].forEach(function (input) {
-                  updatePromises.push(
-                    model.update(input, {
-                      where: keys.reduce(function (all, key) {
-                        all[key] = input[key];
-                        return all;
-                      }, {}),
-                    })
-                  );
+                  input[isBulk] = bulkAddId;
                 });
+              }
 
-                return _await(Promise.all(updatePromises), function (_Promise$all) {
-                  data = _Promise$all;
-                });
-              } else {
-                if (typeof isBulk === "string" && args[inputTypeName].length && !args[inputTypeName][0][isBulk]) {
-                  var bulkAddId = uuid();
+              var validate = true;
 
-                  args[inputTypeName].forEach(function (input) {
-                    input[isBulk] = bulkAddId;
-                  });
-                }
+              return _await(model[operationType](type === "destroy" ? { where: where } : args[inputTypeName], { where: where, validate: validate }), function (_model$operationType) {
+                data = _model$operationType;
 
-                var validate = true;
-
-                return _await(
-                  model[operationType](type === "destroy" ? { where: where } : args[inputTypeName], { where: where, validate: validate }),
-                  function (_model$operationType) {
-                    data = _model$operationType;
-
-                    return _invokeIgnored(function () {
-                      if (typeof isBulk === "string") {
-                        return _await(
-                          model.findAll({ where: _defineProperty({}, isBulk, args[inputTypeName][0][isBulk]) }),
-                          function (_model$findAll) {
-                            data = _model$findAll;
-                          }
-                        );
-                      }
+                return _invokeIgnored(function () {
+                  if (typeof isBulk === "string") {
+                    return _await(model.findAll({ where: _defineProperty({}, isBulk, args[inputTypeName][0][isBulk]) }), function (_model$findAll) {
+                      data = _model$findAll;
                     });
                   }
-                );
-              }
-            },
-            function () {
-              return _invoke(
-                function () {
-                  if (model.graphql.extend.hasOwnProperty(type)) {
-                    return _await(
-                      model.graphql.extend[type](type === "destroy" ? preData : data, source, args, context, info, where),
-                      function (_model$graphql$extend) {
-                        data = _model$graphql$extend;
-                      }
-                    );
-                  }
-                },
-                function () {
-                  return operationType === "bulkCreate" && isBulk === true
-                    ? data.length
-                    : _await(options.logger(data, source, args, context, info), function () {
-                        return data;
-                      });
-                }
-              );
+                });
+              });
             }
-          );
+          }, function () {
+            return _invoke(function () {
+              if (model.graphql.extend.hasOwnProperty(type)) {
+                return _await(model.graphql.extend[type](type === "destroy" ? preData : data, source, args, context, info, where), function (_model$graphql$extend) {
+                  data = _model$graphql$extend;
+                });
+              }
+            }, function () {
+              return operationType === "bulkCreate" && isBulk === true ? data.length : _await(options.logger(data, source, args, context, info), function () {
+
+                return data;
+              });
+            });
+          });
         });
       });
     });
@@ -396,7 +333,7 @@ var toGraphQLType = function toGraphQLType(name, schema) {
     name: name,
     fields: function fields() {
       return _fields;
-    },
+    }
   });
 };
 
@@ -425,7 +362,7 @@ function getBulkOption(options, key) {
   var bulkOption = options.filter(function (option) {
     return Array.isArray(option) ? option[0] == key : option == key;
   });
-  return bulkOption.length ? (Array.isArray(bulkOption[0]) ? bulkOption[0][1] : true) : false;
+  return bulkOption.length ? Array.isArray(bulkOption[0]) ? bulkOption[0][1] : true : false;
 }
 
 /**
@@ -447,15 +384,12 @@ var generateAssociationFields = function generateAssociationFields(associations,
 
     if (!types[relation.target.name]) {
       return {
-        v: fields,
+        v: fields
       };
     }
 
     // BelongsToMany is represented as a list, just like HasMany
-    var type =
-      relation.associationType === "BelongsToMany" || relation.associationType === "HasMany"
-        ? new GraphQLList(types[relation.target.name])
-        : types[relation.target.name];
+    var type = relation.associationType === "BelongsToMany" || relation.associationType === "HasMany" ? new GraphQLList(types[relation.target.name]) : types[relation.target.name];
 
     fields[associationName] = { type: type };
 
@@ -464,25 +398,21 @@ var generateAssociationFields = function generateAssociationFields(associations,
       fields[associationName].args = Object.assign(defaultArgs(relation), defaultListArgs(), includeArguments());
       fields[associationName].resolve = _async(function (source, args, context, info) {
         return _await(execBefore(relation.target, source, args, context, info, "fetch"), function () {
-          return _await(
-            resolver(relation, _defineProperty({}, EXPECTED_OPTIONS_KEY, dataloaderContext))(source, args, context, info),
-            function (data) {
-              var _exit = false;
-              return _invoke(
-                function () {
-                  if (relation.target.graphql.extend.fetch && data.length) {
-                    return _await(relation.target.graphql.extend.fetch(data, source, args, context, info), function (item) {
-                      _exit = true;
-                      return [].concat(item);
-                    });
-                  }
-                },
-                function (_result) {
-                  return _exit ? _result : data;
-                }
-              );
-            }
-          );
+          return _await(resolver(relation, _defineProperty({}, EXPECTED_OPTIONS_KEY, dataloaderContext))(source, args, context, info), function (data) {
+            var _exit = false;
+            return _invoke(function () {
+              if (relation.target.graphql.extend.fetch && data.length) {
+                return _await(relation.target.graphql.extend.fetch(data, source, args, context, info), function (item) {
+                  var _concat = [].concat(item);
+
+                  _exit = true;
+                  return _concat;
+                });
+              }
+            }, function (_result) {
+              return _exit ? _result : data;
+            });
+          });
         });
       });
     } else if (!isInput && relation.isRemote) {
@@ -526,12 +456,8 @@ var generateGraphQLType = function generateGraphQLType(model, types) {
   return new GraphQLClass({
     name: isInput ? model.name + "Input" : model.name,
     fields: function fields() {
-      return Object.assign(
-        attributeFields(model, Object.assign({}, { allowNull: !!isInput, cache: cache })),
-        generateAssociationFields(model.associations, types, isInput),
-        includeAttributes
-      );
-    },
+      return Object.assign(attributeFields(model, Object.assign({}, { allowNull: !!isInput, cache: cache })), generateAssociationFields(model.associations, types, isInput), includeAttributes);
+    }
   });
 };
 
@@ -558,7 +484,7 @@ var generateCustomGraphQLTypes = function generateCustomGraphQLTypes(model, type
 
       return new GraphQLEnumType({
         name: type,
-        values: _fields2,
+        values: _fields2
       });
     }
 
@@ -591,7 +517,7 @@ var generateCustomGraphQLTypes = function generateCustomGraphQLTypes(model, type
           name: type,
           fields: function fields() {
             return _fields2;
-          },
+          }
         });
       }
     } else {
@@ -600,7 +526,7 @@ var generateCustomGraphQLTypes = function generateCustomGraphQLTypes(model, type
           name: type,
           fields: function fields() {
             return _fields2;
-          },
+          }
         });
       }
     }
@@ -680,7 +606,7 @@ var generateQueryRootType = function generateQueryRootType(models, outputTypes, 
         description: "An empty default Query.",
         resolve: function resolve() {
           return 1;
-        },
+        }
       });
       var paranoidType = models[modelType.name].options.paranoid ? { paranoid: { type: GraphQLBoolean } } : {};
 
@@ -692,7 +618,7 @@ var generateQueryRootType = function generateQueryRootType(models, outputTypes, 
           args: Object.assign(defaultArgs(models[modelType.name]), defaultListArgs(), includeArguments(), paranoidType),
           resolve: function resolve(source, args, context, info) {
             return queryResolver(models[modelType.name], modelType.name, source, args, context, info);
-          },
+          }
         };
       }
 
@@ -742,7 +668,7 @@ var generateQueryRootType = function generateQueryRootType(models, outputTypes, 
               return options.authorizer(source, args, context, info).then(function (_) {
                 return models[modelTypeName].graphql.queries[query].resolver(source, args, context, info);
               });
-            },
+            }
           };
         };
 
@@ -752,7 +678,7 @@ var generateQueryRootType = function generateQueryRootType(models, outputTypes, 
       }
 
       return Object.assign(fields, queries);
-    }, {}),
+    }, {})
   });
 };
 
@@ -777,7 +703,7 @@ var generateMutationRootType = function generateMutationRootType(models, inputTy
         description: "An empty default Mutation.",
         resolve: function resolve() {
           return 1;
-        },
+        }
       });
 
       if (models[inputTypeName].graphql.excludeMutations.indexOf("create") === -1) {
@@ -787,7 +713,7 @@ var generateMutationRootType = function generateMutationRootType(models, inputTy
           args: Object.assign(_defineProperty({}, inputTypeName, { type: inputType }), includeArguments()),
           resolve: function resolve(source, args, context, info) {
             return mutationResolver(models[inputTypeName], inputTypeName, source, args, context, info, "create");
-          },
+          }
         };
       }
 
@@ -802,7 +728,7 @@ var generateMutationRootType = function generateMutationRootType(models, inputTy
               // `boolean` equals the number of rows affected (0 or 1)
               return resolver(models[inputTypeName], _defineProperty({}, EXPECTED_OPTIONS_KEY, dataloaderContext))(source, where, context, info);
             });
-          },
+          }
         };
       }
 
@@ -814,7 +740,7 @@ var generateMutationRootType = function generateMutationRootType(models, inputTy
           resolve: function resolve(source, args, context, info) {
             var where = _defineProperty({}, key, args[key]);
             return mutationResolver(models[inputTypeName], inputTypeName, source, args, context, info, "destroy", where);
-          },
+          }
         };
       }
 
@@ -828,7 +754,7 @@ var generateMutationRootType = function generateMutationRootType(models, inputTy
           args: Object.assign(_defineProperty({}, inputTypeName, { type: new GraphQLList(inputType) }), includeArguments()),
           resolve: function resolve(source, args, context, info) {
             return mutationResolver(models[inputTypeName], inputTypeName, source, args, context, info, "create", null, hasBulkOptionCreate);
-          },
+          }
         };
       }
 
@@ -838,30 +764,15 @@ var generateMutationRootType = function generateMutationRootType(models, inputTy
           description: "Update bulk " + inputTypeName + " and return number of rows modified or updated rows.",
           args: Object.assign(_defineProperty({}, inputTypeName, { type: new GraphQLList(inputType) }), includeArguments()),
           resolve: _async(function (source, args, context, info) {
-            var whereClause = _defineProperty(
-              {},
-              key,
-              _defineProperty(
-                {},
-                Models.Sequelize.Op.in,
-                args[inputTypeName].map(function (input) {
-                  return input[key];
-                })
-              )
-            );
+            var whereClause = _defineProperty({}, key, _defineProperty({}, Models.Sequelize.Op.in, args[inputTypeName].map(function (input) {
+              return input[key];
+            })));
 
-            return _await(
-              mutationResolver(models[inputTypeName], inputTypeName, source, args, context, info, "update", null, hasBulkOptionEdit),
-              function () {
-                return resolver(models[inputTypeName], _defineProperty({}, EXPECTED_OPTIONS_KEY, dataloaderContext))(
-                  source,
-                  whereClause,
-                  context,
-                  info
-                );
-              }
-            );
-          }),
+            return _await(mutationResolver(models[inputTypeName], inputTypeName, source, args, context, info, "update", null, hasBulkOptionEdit), function () {
+
+              return resolver(models[inputTypeName], _defineProperty({}, EXPECTED_OPTIONS_KEY, dataloaderContext))(source, whereClause, context, info);
+            });
+          })
         };
       }
 
@@ -907,17 +818,14 @@ var generateMutationRootType = function generateMutationRootType(models, inputTy
             args: Object.assign(_defineProperty({}, inputTypeNameField, { type: inPutType }), includeArguments()),
             resolve: function resolve(source, args, context, info) {
               var where = key && args[inputTypeName] ? _defineProperty({}, key, args[inputTypeName][key]) : {};
-              return options
-                .authorizer(source, args, context, info)
-                .then(function (_) {
-                  return models[inputTypeName].graphql.mutations[mutation].resolver(source, args, context, info, where);
-                })
-                .then(function (data) {
-                  return options.logger(data, source, args, context, info).then(function () {
-                    return data;
-                  });
+              return options.authorizer(source, args, context, info).then(function (_) {
+                return models[inputTypeName].graphql.mutations[mutation].resolver(source, args, context, info, where);
+              }).then(function (data) {
+                return options.logger(data, source, args, context, info).then(function () {
+                  return data;
                 });
-            },
+              });
+            }
           };
         };
 
@@ -929,7 +837,7 @@ var generateMutationRootType = function generateMutationRootType(models, inputTy
       var toReturn = Object.assign(fields, mutations);
 
       return toReturn;
-    }, {}),
+    }, {})
   });
 };
 
@@ -969,7 +877,7 @@ var generateSchema = function generateSchema(models, types, context, Sequelize) 
                   associationType: remoteSchema.queries[index].isList ? "HasMany" : "BelongsTo",
                   isRemote: true,
                   target: { name: association.from },
-                  query: Object.assign({}, association, remoteSchema.queries[index]),
+                  query: Object.assign({}, association, remoteSchema.queries[index])
                 };
                 break;
               }
@@ -988,7 +896,7 @@ var generateSchema = function generateSchema(models, types, context, Sequelize) 
 
       return {
         query: generateQueryRootType(availableModels, modelTypes.outputTypes, modelTypes.inputTypes),
-        mutation: generateMutationRootType(availableModels, modelTypes.inputTypes, modelTypes.outputTypes),
+        mutation: generateMutationRootType(availableModels, modelTypes.inputTypes, modelTypes.outputTypes)
       };
     });
   } else {
@@ -996,7 +904,7 @@ var generateSchema = function generateSchema(models, types, context, Sequelize) 
 
     return {
       query: generateQueryRootType(availableModels, modelTypes.outputTypes, modelTypes.inputTypes),
-      mutation: generateMutationRootType(availableModels, modelTypes.inputTypes, modelTypes.outputTypes),
+      mutation: generateMutationRootType(availableModels, modelTypes.inputTypes, modelTypes.outputTypes)
     };
   }
 };
@@ -1004,12 +912,19 @@ var generateSchema = function generateSchema(models, types, context, Sequelize) 
 /* Copy-pasta'd from https://medium.com/free-code-camp/a-5-line-major-efficiency-hack-for-your-graphql-api-type-resolvers-b58438b62864
   as noted in the article and comments: does not work with custom field resolvers, renamed fields, spread fragments, or inline fragments
 */
-const mapAttributes = (model, { fieldNodes }) => {
+var mapAttributes = function mapAttributes(model, _ref3) {
+  var fieldNodes = _ref3.fieldNodes;
+
   // get the fields of the Model (columns of the table)
-  const columns = new Set(Object.keys(model.rawAttributes));
-  const requested_attributes = fieldNodes[0].selectionSet.selections.map(({ name: { value } }) => value);
+  var columns = new Set(Object.keys(model.rawAttributes));
+  var requested_attributes = fieldNodes[0].selectionSet.selections.map(function (_ref4) {
+    var value = _ref4.name.value;
+    return value;
+  });
   // filter the attributes against the columns
-  return requested_attributes.filter((attribute) => columns.has(attribute));
+  return requested_attributes.filter(function (attribute) {
+    return columns.has(attribute);
+  });
 };
 
 module.exports = function (_options) {
@@ -1021,6 +936,6 @@ module.exports = function (_options) {
     dataloaderContext: dataloaderContext,
     errorHandler: errorHandler,
     TRANSACTION_NAMESPACE: TRANSACTION_NAMESPACE,
-    resetCache: resetCache,
+    resetCache: resetCache
   };
 };
