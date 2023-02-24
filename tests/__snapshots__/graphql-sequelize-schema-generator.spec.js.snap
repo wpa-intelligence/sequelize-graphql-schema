@@ -3,13 +3,13 @@
 exports[`outputs the correct schema (build version) 1`] = `
 "Object{
   query: GraphQLObjectType{
-    name: \\"Root_Query\\",
+    name: \\"Query\\",
     description: undefined,
     astNode: undefined,
     extensionASTNodes: [],
     isTypeOf: undefined,
     _typeConfig: Object{
-      name: \\"Root_Query\\",
+      name: \\"Query\\",
       fields: Object{
         Department: Object{
           type: GraphQLList{
@@ -371,13 +371,13 @@ exports[`outputs the correct schema (build version) 1`] = `
     }
   },
   mutation: GraphQLObjectType{
-    name: \\"Root_Mutations\\",
+    name: \\"Mutation\\",
     description: undefined,
     astNode: undefined,
     extensionASTNodes: [],
     isTypeOf: undefined,
     _typeConfig: Object{
-      name: \\"Root_Mutations\\",
+      name: \\"Mutation\\",
       fields: Object{
         DepartmentCreate: Object{
           type: GraphQLObjectType{
@@ -748,13 +748,13 @@ exports[`outputs the correct schema (build version) 1`] = `
 exports[`outputs the correct schema 1`] = `
 "Object{
   query: GraphQLObjectType{
-    name: \\"Root_Query\\",
+    name: \\"Query\\",
     description: undefined,
     astNode: undefined,
     extensionASTNodes: [],
     isTypeOf: undefined,
     _typeConfig: Object{
-      name: \\"Root_Query\\",
+      name: \\"Query\\",
       fields: Object{
         Department: Object{
           type: GraphQLList{
@@ -1116,13 +1116,13 @@ exports[`outputs the correct schema 1`] = `
     }
   },
   mutation: GraphQLObjectType{
-    name: \\"Root_Mutations\\",
+    name: \\"Mutation\\",
     description: undefined,
     astNode: undefined,
     extensionASTNodes: [],
     isTypeOf: undefined,
     _typeConfig: Object{
-      name: \\"Root_Mutations\\",
+      name: \\"Mutation\\",
       fields: Object{
         DepartmentCreate: Object{
           type: GraphQLObjectType{
