@@ -101,5 +101,5 @@
     "test": "npm run test-db-reset && npm run jest",
     "test-db-reset": "rm -rf tests/database.db && sequelize db:migrate"
   },
-  "version": "0.1.70"
+  "version": "0.1.80"
 }
